@@ -9,7 +9,7 @@ const tradeService = require("./trade.service");
 // CRUD routes for trades operations.
 
 module.exports = {
-  getById,
+  getByEmail,
   create,
   update,
   delete: _delete,
@@ -17,18 +17,29 @@ module.exports = {
 
 // route functions
 
-function getById(req, res) {
+function getByEmail(req, res) {
   tradeService
-    .getById(Number(req.query.id))
-    .then((user) => res.status(responseCode.SUCCESSFUL).send(user))
-    .catch((error) => res.status(responseCode.INVALID_PARAMS).send({message: error}));
+    .get(req.query)
+    .then((trades) =>  {
+      if(trades === 0) 
+        res.status(responseCode.SUCCESSFUL).send({message: 'No trades available to show'});
+      else
+        res.status(responseCode.SUCCESSFUL).send(trades);
+    })
+    .catch((error) =>
+      res.status(responseCode.INVALID_PARAMS).send({ message: error })
+    );
 }
 
 function create(req, res) {
   tradeService
     .create(req.body)
-    .then(() => res.status(responseCode.SUCCESSFUL).send({ message: "Trade created" }))
-    .catch((error) => res.status(responseCode.INTERNAL_ERROR).send({message: error}));
+    .then(() =>
+      res.status(responseCode.SUCCESSFUL).send({ message: "Trade created" })
+    )
+    .catch((error) =>
+      res.status(responseCode.INTERNAL_ERROR).send({ message: error })
+    );
 }
 
 function update(req, res) {
@@ -37,14 +48,20 @@ function update(req, res) {
     .then(() =>
       res.status(responseCode.SUCCESSFUL).send({ message: "Trade updated" })
     )
-    .catch((error) => res.status(responseCode.INTERNAL_ERROR).send({message: error}));
+    .catch((error) =>
+      res.status(responseCode.INTERNAL_ERROR).send({ message: error })
+    );
 }
 
 function _delete(req, res) {
   tradeService
     .delete(Number(req.query.id))
-    .then(() => res.status(responseCode.SUCCESSFUL).send({ message: "Trade deleted" }))
-    .catch((error) => res.status(responseCode.INTERNAL_ERROR).send({message: error}));
+    .then(() =>
+      res.status(responseCode.SUCCESSFUL).send({ message: "Trade deleted" })
+    )
+    .catch((error) =>
+      res.status(responseCode.INTERNAL_ERROR).send({ message: error })
+    );
 }
 
 // schema functions

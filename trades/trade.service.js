@@ -1,71 +1,92 @@
 ﻿const { date } = require("joi");
 const db = require("_helpers/tradesDB");
 const { database } = require("config.json").trades;
-const moment = require('moment');
+const moment = require("moment");
+const userService = require("../users/user.service");
+const idService = require("../id/id.service");
 
 module.exports = {
-  getById,
+  get,
   create,
   update,
   delete: _delete,
 };
 
-async function getById(id) {
-  return await getTrade(id);
-}
-
-async function create(params) {
- if(new Date(params.executionDate) < new Date(moment().format()))
-  throw 'Cannot create trade with execution date in past';
-
+async function get(body) {
+  if (!body.email && !body.id) throw "Please pass either email or userID";
 
   try {
+    if (body.email) {
+      const trades = await getTradeByEmail(body.email);
+      if(trades.length === 0) { return {message: 'No trades registered with this email'}} 
+      return trades;
 
+    } else if (body.id) {
+      const trades = await getTradeByID(Number(body.id));
+      if(trades.length === 0) { return {message: 'No trades registered with this trade ID'}}
+      return trades;
+    }
+    
+  } catch (e) {
+    throw e.message;
+  }
+}
+
+async function create(body) {
+  if (new Date(body.executionDate) < new Date(moment().format()))
+    throw "Cannot create trade with execution date in past";
+
+  try {
     //Add to postgres sql the new trade tuple.
     await db.trades.query(
       `INSERT INTO ${database}(ticker, orders, price, execution_type, execution_date, email) 
-      VALUES('${params.ticker}', '${params.orders}', '${params.price}', '${params.executionType}', '${params.executionDate}', '${params.email}');`);
+        VALUES('${body.ticker}', '${body.orders}', '${body.price}', '${body.executionType}', '${body.executionDate}', '${body.email}');`
+    );
 
     //Add to ticker, quantity and price to mongodb the user.
-      
-    }
-    catch(e) {
-      throw e;
-    }
+    await userService.updatePortfolio(body);
+  } catch (e) {
+    // TODO make a rollback query from trades and user's portfolio databases.
+    throw e;
+  }
 }
 
-async function update(id, params) {
+async function update(id, body) {
   const user = await getTrade(id);
 
   // validate
-  const emailChanged = params.email && user.email !== params.email;
+  const emailChanged = body.email && user.email !== body.email;
   if (
     emailChanged &&
-    (await db.trades.Trades.findOne({ where: { email: params.email } }))
+    (await db.trades.Trades.findOne({ where: { email: body.email } }))
   ) {
-    throw 'Email "' + params.email + '" is already registered';
+    throw 'Email "' + body.email + '" is already registered';
   }
 
-  // copy params to user and save
-  Object.assign(user, params);
+  // copy body to user and save
+  Object.assign(user, body);
   await user.save();
 }
 
 async function _delete(id) {
-  const user = await getTrade(id);
+  const user = await getTradeByID(id);
   await user.destroy();
 }
 
 // helper functions
 
-async function getTrade(id) {
+async function getTradeByID(id) {
   const queryResult = await db.trades.query(
     `SELECT * FROM ${database} WHERE id = ${id};`
   );
-  if (!queryResult) throw "User not found";
-  return queryResult;
-  // console.log(`Database entries for ${name}: ${entries.rowCount} row(s)`);
-  // console.log(Object.keys(entries.rows?.[0]).join('\t'));
-  // console.log(`${entries.rows.map((r) => Object.values(r).join('\t')).join('\n')}`);
-  // await client.end();
+  if (!queryResult) throw "Trade ID not found";
+  return queryResult.rows;
+}
+
+async function getTradeByEmail(email) {
+  const queryResult = await db.trades.query(
+    `SELECT * FROM ${database} WHERE email = '${email}';`
+  );
+  if (!queryResult) throw "User ID not found";
+  return queryResult.rows;
 }

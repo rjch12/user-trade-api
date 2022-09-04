@@ -5,7 +5,7 @@ const idService = require("../id/id.service");
 module.exports = {
   getByEmail,
   create,
-  update,
+  updatePortfolio,
   delete: _delete,
 };
 
@@ -32,7 +32,7 @@ async function create(body) {
     first_name: body.first_name,
     last_name: body.last_name,
     email: body.email,
-    ticker: body.ticker,
+    portfolio: body.portfolio,
     contact_details: body.contact_details,
     country_code: body.country_code,
   };
@@ -46,32 +46,36 @@ async function create(body) {
   }
 }
 
-async function update(body) {
-  
-// {
-//   portfolio: {
-//     ADBE: {
-//       Price: Qualtity
-//     }
-//     FRSH: {
-//       Price: Qualtity
-//     }
-//   }
-// }
-
+async function updatePortfolio(body) {
   try {
     // validate if the user exists
-    const idUser = await getUser(body.email);
-    if (idUser.rowCount === 0)
+    const userDetails = await getUser(body.email);
+    if (userDetails.rowCount === 0)
       throw `User with email id ${body.email} does not exists`;
 
-      console.log(idUser);
-      //   add ticker { price: quantity } details in mongoDB;
-      const userInfo = mongoDB.client.find({ _id: idUser});      
-      console.log(JSON.parse(userInfo.portfolio)); 
-      console.log(JSON.parse(userInfo)); 
+    const ticker = body.ticker;
+    const price = String(body.price);
+    const orders = body.orders;
+
+    //if user already has the same ticker symbols in portfolio
+    if (userDetails.portfolio[ticker]) {
+      //if user has the same ticker symbol with the same price in portfolio then add quantity.
+
+      console.log(userDetails.portfolio.ticker);
+      console.log(typeof(userDetails.portfolio.ticker));
+      
+      if (userDetails.portfolio.ticker[price]) {
+        orders = orders + userDetails.portfolio.ticker.price.orders;
+      }
+    }
+    userDetails.portfolio[ticker] = { [price]: orders };
+    const id = Number(userDetails._id);
+
+    await mongoDB.client.updateOne({ _id: id }, { $set: userDetails });
+
+    //   add ticker { price: quantity } details in mongoDB;
   } catch (e) {
-    throw e;
+    throw e.message;
   }
 }
 
