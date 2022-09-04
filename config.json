@@ -1,0 +1,21 @@
+﻿{
+    "users": {
+        "url" :"mongodb://localhost:27017/userDB",
+        "database": "users",
+        "collection": "users"
+    },
+    "trades": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "admin",
+        "password": "",
+        "database": "trades"
+    },
+    "id": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "admin",
+        "password": "",
+        "database": "id"
+    }
+}
