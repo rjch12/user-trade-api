@@ -21,7 +21,7 @@ reference: https://dbdiagram.io/d/630e30c30911f91ba5fab2e4
 - Pre Install `node`, `npm`, `postgres` and `mongodb`.
 - Log into Postgresql and create `trades` database using `create database trades;`
 - Log into Postgresql and create `id` databases using `create database id;`
-- Log into MongoDB and create `userDB` databases. Use [Official MongoDB docs](https://www.mongodb.com/basics/)create-database
+- Log into MongoDB and create `userDB` databases. Use [Official MongoDB docs](https://www.mongodb.com/basics/create-database)
 
 ## Local environment setup
 Follow the following steps to run the service:
