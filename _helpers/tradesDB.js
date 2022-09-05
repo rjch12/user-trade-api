@@ -27,9 +27,10 @@ async function setupTradesTable(client, database) {
         ticker VARCHAR (10) NOT NULL,
         orders INTEGER NOT NULL,
         price REAL NOT NULL,
-        execution_type varchar NOT NULL,
-        execution_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-        email VARCHAR (255) NOT NULL );
+        executionType varchar NOT NULL,
+        executionStartDate TIMESTAMP NOT NULL,
+        executionEndDate  TIMESTAMP NOT NULL,
+        userId INTEGER NOT NULL );
         `;
   await client.query(createTableQuery);
 }

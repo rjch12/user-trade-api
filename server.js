@@ -30,10 +30,6 @@ app.get("/users/getUser/", (req, res) => {
   users.getByEmail(req, res);
 });
 
-app.post("/users/deleteUser/", (req, res) => {
-  users.delete(req, res);
-});
-
 // Trades endpoints listeners
 
 app.post("/trade/createTrade/", (req, res) => {
@@ -41,7 +37,7 @@ app.post("/trade/createTrade/", (req, res) => {
 });
 
 app.get("/trade/getTrade/", (req, res) => {
-  trade.getByEmail(req, res);
+  trade.get(req, res);
 });
 
 app.put("/trade/updateTrade/", (req, res) => {
@@ -50,6 +46,20 @@ app.put("/trade/updateTrade/", (req, res) => {
 
 app.post("/trade/deleteTrade/", (req, res) => {
   trade.delete(req, res);
+});
+
+//Query endpoint
+/*
+Build a query endpoint that takes the following parameters (all optional) and returns the aggregated trade
+summary
+a. UserId
+b. executionStartDate
+c. executionEndDate
+d. executionType
+*/
+
+app.get("/trades/getSummary/", (req, res) => {
+  trade.summary(req, res);
 });
 
 

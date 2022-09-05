@@ -9,25 +9,28 @@ const tradeService = require("./trade.service");
 // CRUD routes for trades operations.
 
 module.exports = {
-  getByEmail,
   create,
   update,
   delete: _delete,
+  get,
+  summary
 };
 
 // route functions
 
-function getByEmail(req, res) {
+function summary (req, res) {
   tradeService
-    .get(req.query)
-    .then((trades) =>  {
-      if(trades === 0) 
-        res.status(responseCode.SUCCESSFUL).send({message: 'No trades available to show'});
-      else
-        res.status(responseCode.SUCCESSFUL).send(trades);
-    })
-    .catch((error) =>
-      res.status(responseCode.INVALID_PARAMS).send({ message: error })
+    .summary(req.query)
+    .then((trades) => res.status(responseCode.SUCCESSFUL).send(trades))
+    .catch((error) => res.status(responseCode.INVALID_PARAMS).send({ message: error })
+    );
+}
+
+function get(req, res) {
+  tradeService
+    .getByTradeID(req.query)
+    .then((trades) => res.status(responseCode.SUCCESSFUL).send(trades))
+    .catch((error) => res.status(responseCode.INVALID_PARAMS).send({ message: error })
     );
 }
 
@@ -44,10 +47,8 @@ function create(req, res) {
 
 function update(req, res) {
   tradeService
-    .update(req.body.id, req.body)
-    .then(() =>
-      res.status(responseCode.SUCCESSFUL).send({ message: "Trade updated" })
-    )
+    .update(req.body)
+    .then(() => res.status(responseCode.SUCCESSFUL).send({ message: "Trade updated" }))
     .catch((error) =>
       res.status(responseCode.INTERNAL_ERROR).send({ message: error })
     );
@@ -55,10 +56,8 @@ function update(req, res) {
 
 function _delete(req, res) {
   tradeService
-    .delete(Number(req.query.id))
-    .then(() =>
-      res.status(responseCode.SUCCESSFUL).send({ message: "Trade deleted" })
-    )
+    .delete(req.query)
+    .then(() => res.status(responseCode.SUCCESSFUL).send({ message: "Trade deleted" }))
     .catch((error) =>
       res.status(responseCode.INTERNAL_ERROR).send({ message: error })
     );

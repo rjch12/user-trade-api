@@ -1,12 +1,14 @@
 ﻿const e = require("express");
 const mongoDB = require("_helpers/usersDB");
+const helper = require("_helpers/helper");
 const idService = require("../id/id.service");
 
 module.exports = {
   getByEmail,
   create,
   updatePortfolio,
-  delete: _delete,
+  removeTrade
+  // delete: _delete,
 };
 
 async function getByEmail(email) {
@@ -32,7 +34,7 @@ async function create(body) {
     first_name: body.first_name,
     last_name: body.last_name,
     email: body.email,
-    portfolio: body.portfolio,
+    transactions: body.transactions,
     contact_details: body.contact_details,
     country_code: body.country_code,
   };
@@ -46,47 +48,19 @@ async function create(body) {
   }
 }
 
-async function updatePortfolio(body) {
+async function _delete(body) {
+  if (!body.email) throw "Missing param 'Email'";
+
   try {
-    // validate if the user exists
-    const userDetails = await getUser(body.email);
-    if (userDetails.rowCount === 0)
-      throw `User with email id ${body.email} does not exists`;
+    const idInfo = await idService.getByEmail(body.email);
 
-    const ticker = body.ticker;
-    const price = String(body.price);
-    const orders = body.orders;
-
-    //if user already has the same ticker symbols in portfolio
-    if (userDetails.portfolio[ticker]) {
-      //if user has the same ticker symbol with the same price in portfolio then add quantity.
-
-      console.log(userDetails.portfolio.ticker);
-      console.log(typeof(userDetails.portfolio.ticker));
-      
-      if (userDetails.portfolio.ticker[price]) {
-        orders = orders + userDetails.portfolio.ticker.price.orders;
-      }
-    }
-    userDetails.portfolio[ticker] = { [price]: orders };
-    const id = Number(userDetails._id);
-
-    await mongoDB.client.updateOne({ _id: id }, { $set: userDetails });
-
-    //   add ticker { price: quantity } details in mongoDB;
+    if (idInfo.rowCount === 0) throw "User not found";
+    await idService.delete(body.email);
+    await mongoDB.client.deleteOne({ _id: idInfo.rows[0].id });
+    await helper.removeTrade(body.email);
   } catch (e) {
-    throw e.message;
+    throw e;
   }
-}
-
-async function _delete(email) {
-  if (!email) throw "Missing param 'Email'";
-
-  const idInfo = await idService.getByEmail(email);
-
-  if (idInfo.rowCount === 0) throw "Email not found";
-  await mongoDB.client.deleteOne({ _id: idInfo.rows[0].id });
-  await idService.delete(email);
 }
 
 // helper functions
@@ -94,9 +68,57 @@ async function _delete(email) {
 async function getUser(email) {
   const id = await idService.getByEmail(email);
 
-  if (id.rowCount === 0) throw "Email not found";
+  if (id.rowCount === 0) throw "User not found";
 
   const user = await mongoDB.client.find({ _id: id.rows[0].id }).toArray();
 
   return user[0];
 }
+
+async function getUserByID(id) {
+  try {
+    const user = await mongoDB.client.find({ _id: id }).toArray();
+    return user[0];
+  }
+  catch(e) {throw `User with id ${id} does not exists`;}
+}
+
+async function updatePortfolio(body, transactionID) {
+  try {
+    // validate if the user exists
+      
+    const userDetails = await getUserByID(body.userid);
+
+      userDetails.transactions[transactionID] = {
+      ticker: body.ticker,
+      price: body.price,
+      orders: body.orders,
+      executionType: body.executionType,
+      executionStartDate: body.executionStartDate,
+      executionEndDate: body.executionEndDate
+    };
+
+    await mongoDB.client.updateOne({ _id: body.userid }, { $set: userDetails });
+
+    //   add ticker { price: quantity } details in mongoDB;
+  } catch (e) {
+    throw e.message;
+  }
+}
+
+async function removeTrade(tradeid, userId) {
+  const userDetails = await getUserByID(userId);
+  if (!userDetails || userDetails.rowCount === 0)
+  throw `User with User id ${userId} does not exists`;
+
+  delete userDetails.transactions[tradeid];
+
+  try {
+    await mongoDB.client.updateOne({ _id: userId }, { $set: userDetails });
+
+    //   add ticker { price: quantity } details in mongoDB;
+  } catch (e) {
+    throw e.message;
+  }
+}
+

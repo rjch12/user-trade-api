@@ -40,7 +40,7 @@ function update(req, res) {
   
 function _delete(req, res) {
   userService
-    .delete(req.query.email)
+    .delete(req.query)
     .then(() => res.status(responseCode.SUCCESSFUL).send({ message: "User deleted" }))
     .catch((error) => res.status(responseCode.BAD_REQUEST).send({message: error}));
 }

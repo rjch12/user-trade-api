@@ -27,7 +27,6 @@ async function create(email) {
 }
 
 async function _delete(email) {
-
   await db.id.query(
   `DELETE FROM ${database} WHERE email = '${email}'`);
 }
@@ -37,6 +36,6 @@ async function getUser(email) {
   const user = await db.id.query(
     `SELECT id FROM ${database} WHERE email = '${email}';`
   );
-  if (!user) throw "Email not found";
+  if (!user) throw "User not found";
   return user;
 }
