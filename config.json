@@ -1,7 +1,7 @@
 ﻿{
     "users": {
         "url" :"mongodb://localhost:27017/userDB",
-        "database": "users",
+        "database": "userDB",
         "collection": "users"
     },
     "trades": {
