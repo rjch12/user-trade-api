@@ -1,9 +1,4 @@
-﻿const express = require("express");
-const router = express.Router();
-const Joi = require("joi");
-const validateRequest = require("_middleware/validate-request");
-const responseCode = require("_middleware/responseCodeHandler");
-const tradeType = require("_helpers/tradeType");
+﻿const responseCode = require("_middleware/responseCodeHandler");
 const tradeService = require("./trade.service");
 
 // CRUD routes for trades operations.
@@ -63,30 +58,3 @@ function _delete(req, res) {
     );
 }
 
-// schema functions
-
-function createSchema(req, res, next) {
-  const schema = Joi.object({
-    id: Joi.integer().required(),
-    ticker: Joi.string().required().max(10, "utf8"),
-    order: Joi.integer().greater("0").required(),
-    price: Joi.integer().greater("0").required(),
-    executionType: Joi.string().required().valid(tradeType.buy, tradeType.sell),
-    executionDate: Joi.date().min("now").required(),
-    userid: Joi.string().required(),
-  });
-  validateRequest(req, next, schema);
-}
-
-function updateSchema(req, res, next) {
-  const schema = Joi.object({
-    id: Joi.integer().required(),
-    ticker: Joi.string().required(),
-    order: Joi.integer().required(),
-    price: Joi.integer().valid(tradeType.buy, tradeType.sell).required(),
-    executionType: Joi.string().required().valid(),
-    executionDate: Joi.string().min(6).required(),
-    userid: Joi.string().required(),
-  });
-  validateRequest(req, next, schema);
-}

@@ -7,9 +7,7 @@
         "start:dev": "nodemon ./server.js"
     },
     "dependencies": {
-        "cors": "^2.8.5",
         "express": "^4.17.1",
-        "joi": "^17.2.0",
         "moment": "^2.29.4",
         "mongodb": "^4.9.1",
         "pg": "^8.8.0",

@@ -1,5 +1,4 @@
-﻿const e = require("express");
-const mongoDB = require("_helpers/usersDB");
+﻿const mongoDB = require("_helpers/usersDB");
 const helper = require("_helpers/helper");
 const idService = require("../id/id.service");
 
@@ -48,6 +47,7 @@ async function create(body) {
   }
 }
 
+// Depricating deletion as scope involves CRUD for Trades services only. Can be used in future.
 async function _delete(body) {
   if (!body.email) throw "Missing param 'Email'";
 
@@ -79,17 +79,19 @@ async function getUserByID(id) {
   try {
     const user = await mongoDB.client.find({ _id: id }).toArray();
     return user[0];
+  } catch (e) {
+    throw `User with id ${id} does not exists`;
   }
-  catch(e) {throw `User with id ${id} does not exists`;}
 }
 
 async function updatePortfolio(body, transactionID) {
   try {
     // validate if the user exists
-      
+
     const userDetails = await getUserByID(body.userid);
 
-      userDetails.transactions[transactionID] = {
+    // update user transaction object with the new values for the given trade ID
+    userDetails.transactions[transactionID] = {
       ticker: body.ticker,
       price: body.price,
       orders: body.orders,
@@ -97,10 +99,10 @@ async function updatePortfolio(body, transactionID) {
       executionStartDate: body.executionStartDate,
       executionEndDate: body.executionEndDate
     };
-
+    // update mongo db
     await mongoDB.client.updateOne({ _id: body.userid }, { $set: userDetails });
 
-    //   add ticker { price: quantity } details in mongoDB;
+    // add ticker { price: quantity } details in mongoDB;
   } catch (e) {
     throw e.message;
   }
@@ -109,14 +111,14 @@ async function updatePortfolio(body, transactionID) {
 async function removeTrade(tradeid, userId) {
   const userDetails = await getUserByID(userId);
   if (!userDetails || userDetails.rowCount === 0)
-  throw `User with User id ${userId} does not exists`;
+    throw `User with User id ${userId} does not exists`;
 
   delete userDetails.transactions[tradeid];
 
   try {
     await mongoDB.client.updateOne({ _id: userId }, { $set: userDetails });
 
-    //   add ticker { price: quantity } details in mongoDB;
+    //  add ticker { price: quantity } details in mongoDB;
   } catch (e) {
     throw e.message;
   }
