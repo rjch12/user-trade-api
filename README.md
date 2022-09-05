@@ -132,3 +132,4 @@ Following are some features that I believe should be added but needs more discus
 - DB Rollback: For transactions that are failed, the system does not rollback all pre db operations done for the request. For now, I've marked this TODO.
 - Tests: There are no inbuild unit tests for this repo. Tests can be added using express and mocha with jest mocking functions.
 - This repo creates only the required tables in the `config.database` hence it expects that Postgres and Mongo DB have the required `databases` pre created.
+- This repo could not be dokerized because of port setting issues with my local machine. This is a machine specific issue and might work on other machines or VMs. 
