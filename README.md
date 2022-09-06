@@ -19,14 +19,13 @@ reference: https://dbdiagram.io/d/630e30c30911f91ba5fab2e4
 
 ## Project setup prerequisits
 - Pre Install `node`, `npm`, `postgres` and `mongodb`.
-- Log into Postgresql and create `trades` database using `create database trades;`
-- Log into Postgresql and create `id` databases using `create database id;`
-- Log into MongoDB and create `userDB` databases. Use [Official MongoDB docs](https://www.mongodb.com/basics/create-database)
 
 ## Local environment setup
-Follow the following steps to run the service:
+Following are steps to run the service locally:
 - Clone the project using: `git clone https://github.com/rjch12/user-trade-api.git`
 - Go to the repo directory using: `cd user-trade-api`
+- Update config.json
+- The application checks and creates the required tables but does not the DB. Create the mentioned under `config.users.databases` in MongoDB and under `config.trades.database` and `config.id.database` in Postgres.
 - Run `npm i`
 - Run `npm start`
 
