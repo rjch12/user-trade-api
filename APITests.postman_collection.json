@@ -1,0 +1,389 @@
+{
+	"info": {
+		"_postman_id": "e14cecbd-6c24-49e8-a703-e08bb1e3d88c",
+		"name": "APITests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23107602"
+	},
+	"item": [
+		{
+			"name": "localhost:4000/users/createUser",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Mr.\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"Abc@yahoo.com\",\n    \"transactions\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/users/createUser",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"users",
+						"createUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/users/getUser",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/users/getUser?email=Abc@yahoo.com",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"users",
+						"getUser"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "Abc@yahoo.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/trade/createTrade",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ticker\": \"AAPL\",\n  \"orders\": 100,\n  \"price\": \"4\",\n  \"executionType\": \"buy\",\n  \"executionStartDate\": \"2022-09-09T12:36:58-04:00\",\n  \"executionEndDate\": \"2022-09-09T12:36:58-04:00\",\n  \"userid\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/trade/createTrade/",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"trade",
+						"createTrade",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/trade/getTrade",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/trade/getTrade?tradeid=1",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"trade",
+						"getTrade"
+					],
+					"query": [
+						{
+							"key": "tradeid",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/trade/updateTrade",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var moment = require('moment')",
+							" pm.globals.set(\"FutureDatetime\", moment().format() + 1)",
+							" pm.globals.set(\"CurrentDatetime\", moment().format() + 1)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tradeid\": 1,\n    \"ticker\": \"ADBE\",\n    \"orders\": 100,\n    \"price\": \"4\",\n    \"executionType\": \"sell\",\n    \"executionStartDate\": \"2022-09-09T12:36:58-04:00\",\n    \"executionEndDate\": \"2022-09-09T12:36:58-04:00\",\n    \"userid\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/trade/updateTrade/",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"trade",
+						"updateTrade",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/trade/getSummary",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/trades/getSummary/?executionType=sell",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"trades",
+						"getSummary",
+						""
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "executionType",
+							"value": "sell"
+						},
+						{
+							"key": "executionStartDate",
+							"value": "\"2022-09-09T12:36:58-04:00\"",
+							"disabled": true
+						},
+						{
+							"key": "executionEndDate",
+							"value": "\"2022-09-09T12:36:58-04:00\"",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/trade/deleteTrade",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "id",
+						"value": "4",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/trade/deleteTrade?tradeid=1&userid=1",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"trade",
+						"deleteTrade"
+					],
+					"query": [
+						{
+							"key": "tradeid",
+							"value": "1"
+						},
+						{
+							"key": "userid",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
